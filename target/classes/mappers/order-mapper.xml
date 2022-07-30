@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="orderMapper">
+
+   <resultMap type="Order" id="OderResultSet">
+   <id property="orderNo" column="ORDER_NO"/>
+   <result property="orderDate" column="ORDER_DATE"/>
+   <result property="price" column="ORDER_PRICE"/>
+   <result property="orderAddress" column="ORDER_ADDRESS"/>
+   <result property="zipCode" column="ZIP_CODE"/>
+   <result property="shipNo" column="SHIP_NO"/>
+   <result property="recipient" column="RECIPIENT"/>
+   <result property="email" column="EMAIL"/>
+   <result property="goodsId" column="GOODS_ID"/>
+   <result property="refund" column="REFUND"/>
+   <result property="payNO" column="PAY_NO"/>
+   <result property="approvalNo" column="APPROVAL_NO"/>
+   <result property="phone" column="PHONE"/>
+   <result property="receiptUrl" column="receipt_url"/>
+   </resultMap>
+   
+   <insert id="insertPay">
+      insert into g_order
+      values (#{orderNo}, sysdate, #{price},
+      #{orderAddress}, #{zipCode}, #{shipNo}, #{recipient}, #{email},
+      #{goodsId}, default, #{payNO}, #{approvalNo}, #{phone}, #{receiptUrl})
+   </insert>
+   
+   <update id="updateStock">
+   update goods
+   set stock = stock - 1
+   where GOODS_ID = #{goodsId}
+   </update>
+   
+   <select id="selectOrder" resultMap="OderResultSet">
+      select *
+      from g_order
+      where order_no = #{orderNo} and refund = 'payed'
+   </select>
+   
+   <resultMap type="Goods" id="GoodsResultMap">
+     <id column="GOODS_ID" property="goodsId"/>
+     <result column="GOODS_NAME" property="goodsName"/>
+     <result column="PRICE" property="price"/>
+     <result column="STOCK" property="stock"/>
+     <result column="GCATE_NO" property="gcateNo"/> 
+     <result column="G_CONTENT" property="gContent"/>
+     <result column="BOARD_ID" property="boardId"/>
+     <result column="ORIGIN_NAME" property="originName"/>
+     <result column="CHANGE_NAME" property="changeName"/>
+     <result column="STATUS" property="status"/>
+     <result column="BRAND" property="goodsBrand"/>
+     <result column="G_SIZE" property="goodsSize"/>
+     <result column="COLOR" property="goodsColor"/>
+     </resultMap>
+     
+   <!-- 구매한 용품 정보 (용품 썸네일 포함) 가져오기 -->
+   <select id="getGoodsThumbnail" resultMap="GoodsResultMap">
+      select *
+      from goods 
+         join attachment on(goods_id = board_id)
+      where status = 'Y' and file_status = 'Y' and file_level = 0 and goods_id = #{gId}
+   </select>
+   
+   <!-- 주문 상태(payed->refund) 변경 -->
+   <update id="updateRefund">
+        update
+        g_order set refund = 'refund'
+        where order_no = #{orderNo} and refund = 'payed'
+   </update>
+   
+   <!-- 환불 정보 저장 -->
+   <insert id="refundOrder">
+	   insert into refund
+	   values ( #{refundAmount }, #{refundReason }, sysdate, #{orderNo})
+   </insert>
+   
+   <!-- 환불 상품 재고 수정 -->
+   <update id="refundStock">
+	   update goods
+	   set stock = stock + 1
+	   where GOODS_ID = #{goodsId}
+   </update>
+   
+</mapper>

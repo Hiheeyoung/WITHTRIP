@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="tripMapper">
+	<resultMap type="Attachment" id="AttachmentResultSet">
+	<id column="FILE_ID" property="fileId"/>
+	<result column="ORIGIN_NAME" property="originName"/>
+	<result column="CHANGE_NAME" property="changeName"/>
+	<result column="FILE_PATH" property="filePath"/>
+	<result column="UPLOAD_DATE" property="uploadDate"/>
+	<result column="FILE_LEVEL" property="fileLevel"/>
+	<result column="FILE_STATUS" property="fileStatus"/>
+	<result column="FILE_TYPE" property="fileType"/>
+	<result column="BOARD_ID" property="boardId"/>
+	</resultMap>
+	<!-- 페이징 -->
+	   <select id="getListCount" resultType="_int">
+      select count(*)
+      from trip_board
+        join attachment on(BOARD_ID = TRIP_ID)
+        join member using(EMAIL)
+      where board_status='Y' and file_type =1
+   </select>
+	<!-- 페이지네이션 -->
+	<select id="getBoardList" resultMap="TripBoardResultSet">
+      select *
+      from trip_board
+          join attachment on(BOARD_ID = TRIP_ID)
+          join member using(EMAIL)
+      where board_status = 'Y' and file_type = 1
+      order by trip_id desc
+   </select>
+	<resultMap type="TripBoard" id="TripBoardResultSet">
+	<id column="TRIP_ID" property="boardId"/>
+	<result column="BOARD_TITLE" property="boardTitle"/>
+	<result column="BOARD_CONTENT" property="boardContent"/>
+	<result column="CREATE_DATE" property="createDate"/>
+	<result column="MODIFY_DATE" property="modifyDate"/>
+	<result column="BOARD_COUNT" property="boardCount"/>
+	<result column="BOARD_STATUS" property="boardStatus"/>
+	<result column="TRIP_START" property="tripStart"/>
+	<result column="TRIP_END" property="tripEnd"/>
+	<result column="PART_COUNT" property="partCount"/>
+	<result column="EMAIL" property="email"/>
+	<result column="PREFERENCE" property="preference"/>
+	<result column="ORIGIN_NAME" property="originalFileName"/>
+	<result column="CHANGE_NAME" property="renameFileName"/>
+	<result column="TRIP_ID" property="tripId"/>
+	<result column="MEMBER_NO" property="memberNo"/>
+	<!-- 글작성 -->
+	</resultMap>
+	<insert id="insertBoard">
+		insert into trip_board
+		values (seq_tid.nextval, #{boardTitle}, #{boardContent}, sysdate, sysdate, default, 'Y', #{tripStart}, #{tripEnd}, #{partCount}, #{email}, #{preference})
+	</insert>
+	
+	<insert id="insertFile">
+		insert into Attachment
+		values (seq_fid.nextval, #{originName}, #{changeName}, #{filePath}, sysdate, 1, default, 1, SEQ_TID.CURRVAL, null)
+	</insert>
+	<select id="getFileList" resultMap="AttachmentResultSet">
+      select *
+      from Attachment
+      where file_status='Y' and file_type=1 and FILE_LEVEL=1
+   </select>
+	<!-- 조회수 -->
+	<update id="addReadCount">
+		update trip_board
+		set BOARD_COUNT = BOARD_COUNT + 1
+		where trip_id = #{bId}
+	</update>
+	<!-- 글상세보기 -->
+	<select id="selectBoard" resultMap="TripBoardResultSet">
+		select *
+		from trip_board
+			join attachment on(BOARD_ID = TRIP_ID)
+			join member using(EMAIL)
+		where trip_id = #{bId} and board_status = 'Y' and file_type = 1
+	</select>
+	<select id="selectFile" resultMap="AttachmentResultSet">
+		select *
+		from Attachment
+		where board_id = #{bId} and file_status = 'Y' and file_type = 1
+	</select>
+	<!-- 수정하기 -->
+	<update id="updateBoard">
+		update trip_board
+		set PART_COUNT=#{partCount}, PREFERENCE=#{preference},
+			TRIP_START=#{tripStart}, TRIP_END=#{tripEnd}, BOARD_TITLE=#{boardTitle},
+			BOARD_CONTENT=#{boardContent}, MODIFY_DATE=sysdate
+		where TRIP_ID=#{tripId}
+	</update>
+	<!-- 수정하기 파일 -->
+	<update id="updateFile">
+		update Attachment
+		set
+		<if test="originName != null">
+		ORIGIN_NAME=#{originName},
+		</if>
+		CHANGE_NAME=#{changeName},
+		UPLOAD_DATE=sysdate
+		where BOARD_ID=#{boardId} and file_type = 1
+	</update>
+	<!-- 내가 작성한 동행 글에서 삭제 시에 삭제할 파일 changeName가져오기  -->
+    <select id="getDeleteFileName" resultType="string">
+       select change_name
+       from trip_board
+           join attachment on(BOARD_ID = TRIP_ID)
+       where trip_id = #{bId} and file_type = 1
+    </select>
+	
+	<update id="deleteTripBoard">
+		update trip_board
+		set board_status = 'N'
+		where TRIP_ID = #{bId}
+	</update>
+	<update id="deleteFile">
+		update Attachment
+		set FILE_STATUS = 'N'
+		where BOARD_ID = #{bId} and file_type = 1
+	</update>
+	<!-- 게시물 카운트 -->
+	<select id="getSearchListCount" parameterType="hashmap" resultType="_int">
+		select count(*)
+		from trip_board
+        	join attachment on(BOARD_ID = TRIP_ID)
+        	join member using(EMAIL)
+		where (board_status='Y') and file_type = 1
+			and (BOARD_TITLE like '%' || #{searchValue} || '%' 
+			or nickname like '%' || #{searchValue} || '%'
+			or BOARD_CONTENT like '%' || #{searchValue} || '%'
+			or PREFERENCE like '%' || #{searchValue} || '%')
+	</select>
+	<!-- 검색 결과 페이징 -->
+	<select id="getsearchBoardList" parameterType="map" resultMap="TripBoardResultSet">
+		select *
+		from trip_board
+		    join attachment on(BOARD_ID = TRIP_ID)
+		    join member using(EMAIL)
+		where (board_status = 'Y') and file_type = 1
+			and (BOARD_TITLE like '%' || #{searchValue} || '%' 
+			or nickname like '%' || #{searchValue} || '%'
+			or BOARD_CONTENT like '%' || #{searchValue} || '%'
+			or PREFERENCE like '%' || #{searchValue} || '%')
+		order by trip_id desc
+	</select>
+	<select id="mainSelectList" resultMap="TripBoardResultSet">
+		select *
+		from trip_board
+		    join attachment on(BOARD_ID = TRIP_ID)
+		    join member using(EMAIL)
+		where board_status = 'Y' and file_type = 1
+		order by trip_id desc
+	</select>
+	
+	<!-- 취향선택 게시글 개수 -->
+	   <select id="getpreferenceListCount" resultType="_int">
+      select count(*)
+      from trip_board
+           join attachment on(BOARD_ID = TRIP_ID)
+           join member using(EMAIL)
+      where (board_status='Y' and file_type =1)
+      <choose>
+           <when test="search == 'anything'">
+            and PREFERENCE = '아무거나좋아'
+         </when>
+         <when test="search == 'healing'">
+            and PREFERENCE = '힐링'
+         </when>
+         <when test="search == 'activity'">
+            and PREFERENCE = '엑티비티'
+         </when>
+         <when test="search == 'picture'">
+            and PREFERENCE = '인생사진'
+         </when>
+         <otherwise>
+            and PREFERENCE = '자연'
+         </otherwise>
+      </choose>   
+   </select>
+	<!-- 취향선택 게시글 리스트 -->
+	<select id="getpreferenceList" resultMap="TripBoardResultSet">
+		select *
+		from trip_board
+		    join attachment on(BOARD_ID = TRIP_ID)
+		    join member using(EMAIL)
+		where board_status = 'Y'  and file_type =1
+		<choose>
+		  	<when test="search == 'anything'">
+				and PREFERENCE = '아무거나좋아'
+			</when>
+			<when test="search == 'healing'">
+				and PREFERENCE = '힐링'
+			</when>
+			<when test="search == 'activity'">
+				and PREFERENCE = '엑티비티'
+			</when>
+			<when test="search == 'picture'">
+				and PREFERENCE = '인생사진'
+			</when>
+			<otherwise>
+				and PREFERENCE = '자연'
+			</otherwise>
+		</choose>	
+		order by trip_id desc
+	</select>
+	<!-- 모집중인 게시글만 서치 카운트 -->
+	   <select id="getRecruitingListCount" resultType="_int">
+      select count(*)
+      from trip_board
+           join attachment on(BOARD_ID = TRIP_ID)
+           join member using(EMAIL)
+      where (board_status='Y' and file_type = 1)
+         and trip_start > sysdate
+   </select>
+   <select id="getRecruitingList" resultMap="TripBoardResultSet">
+      select *
+      from trip_board
+          join attachment on(BOARD_ID = TRIP_ID)
+          join member using(EMAIL)
+      where board_status = 'Y' and file_type = 1
+         and trip_start > sysdate
+      order by trip_id desc
+   </select>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	
+	<!-- mybatis에서 null값을 인지하도록 세팅 -->
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	
+	<!-- vo 별칭 -->
+	<typeAliases>
+		<typeAlias type="com.withtrip.WithTrip.member.model.vo.Member" alias="Member"/>
+		<typeAlias type="com.withtrip.WithTrip.notice.model.vo.Notice" alias="Notice"/>
+	    <typeAlias type="com.withtrip.WithTrip.goods.model.vo.Goods" alias="Goods"/>
+		<typeAlias type="com.withtrip.WithTrip.common.Attachment" alias="Attachment"/>
+	    <typeAlias type="com.withtrip.WithTrip.goods.model.vo.Reply" alias="Reply"/>
+	    <typeAlias type="com.withtrip.WithTrip.member.model.vo.TripReview" alias="TripReview"/>
+        <typeAlias type="com.withtrip.WithTrip.trip.model.vo.TripBoard" alias="TripBoard"/>
+        <typeAlias type="com.withtrip.WithTrip.member.model.vo.Report" alias="Report"/>
+        <typeAlias type="com.withtrip.WithTrip.order.model.vo.Order" alias="Order"/>
+        <typeAlias type="com.withtrip.WithTrip.member.model.vo.TripReview" alias="TripReview"/>
+	</typeAliases>
+
+	
+	<!-- member mapper 등록 -->
+	<mappers>
+		<mapper resource="mappers/member-mapper.xml"/>
+		<mapper resource="mappers/admin-mapper.xml"/>
+		<mapper resource="mappers/goods-mapper.xml"/>
+<!-- 		<mapper resource="mappers/chart-mapper.xml"/> -->
+		<mapper resource="mappers/notice-mapper.xml"/>
+		<mapper resource="mappers/trip-mapper.xml"/>
+		<mapper resource="mappers/order-mapper.xml"/>
+	</mappers>
+	
+	
+	
+	
+	
+</configuration>

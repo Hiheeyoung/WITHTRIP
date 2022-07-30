@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="noticeMapper">
+	<select id="getListCount" resultType="_int">
+		select count(*)
+		from notice
+		where notice_status = 'Y'
+		AND fix = 0
+	</select>
+	
+<!-- 	<select id="getNoticeList" resultMap="noticeResultSet"> -->
+<!-- 		select *  -->
+<!-- 		from notice -->
+<!-- 		where notice_status = 'Y' -->
+<!-- 		AND fix = 0 -->
+<!-- 		order by notice_id desc -->
+<!-- 	</select> -->
+	
+<!-- 	<select id="getFixNoticeList" resultMap="noticeResultSet"> -->
+<!-- 		select *  -->
+<!-- 		from notice -->
+<!-- 		where notice_status = 'Y' -->
+<!-- 		AND fix = 1 -->
+<!-- 		order by notice_id desc -->
+<!-- 	</select> -->
+	
+	
+	
+	<select id="getNoticeList" resultMap="noticeResultSet">
+		select * 
+		from notice
+		where notice_status = 'Y'
+		AND fix = 0
+		order by notice_id desc
+	</select>
+	
+	<select id="getFixNoticeList" resultMap="noticeResultSet">
+			SELECT * FROM (
+    
+            select * 
+			from notice
+			where notice_status = 'Y'
+			AND fix = 1
+            ORDER BY ROWNUM DESC)
+            <![CDATA[ 
+             WHERE ROWNUM <=5 
+			]]> 
+
+	</select>
+	
+	
+	
+	
+	<resultMap type="Notice" id="noticeResultSet">
+		<id column="NOTICE_ID" property="noticeId"/>
+		<result column="NOTICE_TITLE" property="noticeTitle"/>
+		<result column="NOTICE_CONTENT" property="noticeContent"/>
+		<result column="NOTICE_COUNT" property="noticeCount"/>
+		<result column="NOTICE_DATE" property="noticeDate"/>
+		<result column="NOTICE_STATUS" property="noticeStatus"/>
+		<result column="FIX" property="fix"/>
+		<result column="EMAIL" property="email"/>
+		<result column="MODIFY_DATE" property="modifyDate"/>
+	
+	</resultMap>
+	
+	<update id="addReadCount">
+		update notice
+		set notice_count = notice_count + 1
+		where notice_id = #{nId}
+	
+	</update>
+	
+	<select id="selectNotice" resultMap="noticeResultSet">
+		select *
+		from notice
+			join member using(email)
+		where notice_id = #{nId} and notice_status = 'Y'
+		
+		
+	</select>
+	
+	<insert id="insertNotice">
+		insert into 
+		notice values(seq_nid.nextval, #{noticeTitle}, 
+						#{noticeContent}, 0, sysdate, 
+						'Y', #{fix}, #{email}, sysdate)
+	</insert>
+	
+	<update id="updateNotice">
+		update notice
+		set notice_title=#{noticeTitle}, notice_content=#{noticeContent}, fix=#{fix}, modify_date=sysdate
+		where notice_id = #{ noticeId }
+		 
+	</update>
+	
+	
+	<delete id="deleteNotice">
+		delete from notice
+		where notice_id = #{ nId }
+	</delete>
+</mapper>

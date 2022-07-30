@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="adminMapper">
+	<select id="getMemberCount" resultType="_int">
+		select count(*)
+		from member
+		where user_status != 'N' and MANAGER_YN ='N'
+	</select>
+	
+	<select id="getMemberList" resultMap="memberResultSet">
+		select *
+		from member
+		where MANAGER_YN ='N'
+		order by (case when USER_STATUS = 'N' then 1 else 0 end),ENROLL_DATE desc
+	</select>
+	
+	<resultMap type="Member" id="memberResultSet">
+	<id column="EMAIL" property="email"/>
+	<result column="USER_NAME" property="userName" />
+	<result column="USER_PWD" property="userPwd" />
+	<result column="NICKNAME" property="nickName" />
+	<result column="PHONE" property="phone" />
+	<result column="ADDRESS" property="address" />
+	<result column="FILE_PATH" property="filePath" />
+	<result column="ORIGIN_NAME" property="originName" />
+	<result column="CHANGE_NAME" property="changeName" />
+	<result column="USER_STATUS" property="userStatus" />
+	<result column="MANAGER_YN" property="managerYN" />
+	<result column="ENROLL_DATE" property="enrollDate" />
+	<result column="MODIFY_DATE" property="modifyDate" />
+	<result column="REPORT_COUNT" property="reportCount" />
+	<result column="ENROLL_TYPE" property="enrollType" />
+	</resultMap>
+	
+	<select id="getSearchListCount" resultType="_int">
+	select count(*)
+	from member
+    where MANAGER_YN ='N' and email like '%' || #{ searchValue } || '%'
+	order by ENROLL_DATE desc
+	</select>
+	
+	<select id="searchMember" resultMap="memberResultSet">
+	select *
+	from member
+    where MANAGER_YN ='N' and email like '%' || #{ searchValue } || '%'
+	order by (case when USER_STATUS = 'N' then 1 else 0 end), ENROLL_DATE desc
+	</select>
+	
+	<update id="deleteMember">
+	update member
+	set USER_STATUS = 'N'
+	where EMAIL = #{ mId }
+	</update>
+	
+	<update id="suspendMember">
+	update member
+	set USER_STATUS = 'S'
+	where EMAIL = #{ mId }
+	</update>
+	
+	<update id="unlockMember">
+	update member
+	set USER_STATUS = 'Y'
+	where EMAIL = #{ mId }
+	</update>
+	
+	
+	<select id="getReportCount" resultType="_int">
+	SELECT count(*)
+	FROM
+  	report
+  	LEFT OUTER JOIN member A ON report.report_user = A.EMAIL
+  	LEFT OUTER JOIN member B ON report.target_user = B.EMAIL
+  	where REPORT_YN = 'N'
+	</select>
+	<select id="getReportList" resultMap="reportResult">
+	select *
+	from report
+  	LEFT OUTER JOIN member A ON report.report_user = A.EMAIL
+  	LEFT OUTER JOIN member B ON report.target_user = B.EMAIL
+	order by report_id desc
+	</select>
+	
+	<resultMap type="Report" id="reportResult">
+	<id column="REPORT_ID" property="report_id"/>
+	<result column="REPORT_CONTENT" property="report_content"/>
+	<result column="REPORT_DATE" property="report_date"/>
+	<result column="REPORT_YN" property="report_yn"/>
+	<result column="RCATE_NO" property="rcate_no"/>
+	<result column="REPORT_USER" property="report_user"/>
+	<result column="TARGET_USER" property="target_user"/>
+	</resultMap>
+	
+	<update id="reportTake">
+	update report 
+	set report_yn = 'Y'
+	where report_id = #{ rId }
+	</update>
+	
+	<update id="getAddReCount">
+	update member
+	set REPORT_COUNT = REPORT_COUNT + 1
+	where ( select target_user from report where report_id= #{ rId } ) = email
+	</update>
+	
+	<select id="getNoticeCount" resultType="_int">
+	select count(*)
+	from notice
+	where notice_status ='Y'
+	</select>
+
+
+	<select id="getNoticeList" resultMap="noticeResultSet">
+	select *
+	from notice
+	where notice_status = 'Y'
+	order by NOTICE_ID desc
+	</select>
+	
+	<resultMap type="Notice" id="noticeResultSet">
+	<id column="NOTICE_ID" property="noticeId"/>
+	<result column="NOTICE_TITLE" property="noticeTitle"/>
+	<result column="NOTICE_CONTENT" property="noticeContent"/>
+	<result column="NOTICE_COUNT" property="noticeCount"/>
+	<result column="NOTICE_DATE" property="noticeDate"/>
+	<result column="NOTICE_STATUS" property="noticeStatus"/>
+	<result column="FIX" property="fix"/>
+	<result column="EMAIL" property="email"/>
+	<result column="MODIFY_DATE" property="modifyDate"/>
+	</resultMap>
+	
+	<select id="getGoodsCount" resultType="_int">
+	select count(*)
+	from goods 
+	order by goods_id desc
+	</select>
+	
+	<select id="getGoodsList" resultMap="goodsResultSet">
+	select *
+	from goods
+	order by goods_id desc
+	</select>
+	
+	<resultMap type="Goods" id="goodsResultSet">
+	<id column="GOODS_ID" property="goodsId"/>
+	<result column="GOODS_NAME" property="goodsName"/>
+	<result column="PRICE" property="price"/>
+	<result column="STOCK" property="stock"/>
+	<result column="GCATE_NO" property="gcateNo"/>
+	<result column="G_CONTENT" property="gContent"/>
+	<result column="BOARD_ID" property="boardId"/>
+	<result column="CHANGE_NAME" property="changeName"/>
+	<result column="ORIGIN_NAME" property="originName"/>
+	<result column="STATUS" property="status"/>
+	</resultMap>
+	
+	<update id="statusChangeN">
+	update goods
+	set status = 'N'
+	where GOODS_ID = #{bId}
+	</update>
+	
+	<update id="statusChangeY">
+	update goods
+	set status = 'Y'
+	where GOODS_ID = #{bId}
+	</update>
+	
+	<select id="getSearchGoodsCount"  resultType="_int">
+	select count(*)
+	from goods
+	where GOODS_NAME like '%' || #{ searchValue } || '%'
+	order by GOODS_ID desc
+	</select>
+	
+	<select id="searchGoods" resultMap="goodsResultSet">
+	select *
+	from goods
+    where GOODS_NAME like '%' || #{ searchValue } || '%'
+	order by GOODS_ID desc
+	</select>
+	
+	<select id="selectGoodsOp" resultMap="goodsResultSet">
+	select *
+	from goods
+    where GCATE_NO = #{ optionNum }
+	order by GOODS_ID desc
+	</select>
+	
+	<select id="getSelectCount" resultType="_int">
+	select count(*)
+	from goods 
+	where GCATE_NO = #{ optionNum }
+	</select>
+	
+	<update id="goodsUpdate">
+	update goods
+	set STOCK = #{gStock}, GCATE_NO = #{gCate}
+	where GOODS_ID = #{ gId }
+	</update>
+	
+	<select id="getOrderCount" resultType="_int">
+	select count(*)
+	from g_order
+	</select>
+	
+	<select id="getOrderList" resultMap="orderResultSet">
+	select *
+	from g_order join goods using (GOODS_ID)
+	order by ORDER_DATE desc
+	</select>
+	
+	<resultMap type="Order" id="orderResultSet">
+		<id column="ORDER_NO" property="orderNo"/>
+		<result column="ORDER_DATE" property="orderDate"/>
+		<result column="ORDER_PRICE" property="price"/>
+		<result column="ORDER_ADDRESS" property="orderAddress"/>
+		<result column="ZIP_CODE" property="zipCode"/>
+		<result column="SHIP_NO" property="shipNo"/>
+		<result column="RECIPIENT" property="recipient"/>
+		<result column="EMAIL" property="email"/>
+		<result column="GOODS_ID" property="goodsId"/>
+		<result column="REFUND" property="refund"/>
+		<result column="PAY_NO" property="payNO"/>
+		<result column="APPROVAL_NO" property="approvalNo"/>
+		<result column="PHONE" property="phone"/>
+		<result column="GOODS_NAME" property="goodsName"/>
+	</resultMap>
+	
+	<select id="getSearchOrderCount" resultType="_int">
+	select count(*)
+	from g_order
+	where email like '%' || #{ searchValue } || '%'
+	order by ORDER_DATE desc
+	</select>
+	
+	<select id="searchOrder" resultMap="orderResultSet">
+	select *
+	from g_order
+	where email like '%' || #{ searchValue } || '%'
+	order by ORDER_DATE desc
+	</select>
+	
+	<select id="getSelectOrderCount" resultType="_int">
+	select count(*)
+	from g_order
+	where REFUND = #{ optionOd }
+	order by ORDER_DATE desc
+	</select>
+	
+	<select id="selectOrderSt" resultMap="orderResultSet">
+	select *
+	from g_order join goods using (goods_id)
+	where REFUND = #{ optionOd }
+	order by ORDER_DATE desc
+	</select>
+	
+	<select id="searchDateCount" resultType="_int">
+	<![CDATA[
+	SELECT count(*) 
+	FROM g_order join goods using (goods_id)
+	WHERE order_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') 
+                   AND TO_DATE(#{endDate}, 'YYYY-MM-DD')+0.99999
+    ]]>
+	</select>
+	
+	<select id="searchDate" resultMap="orderResultSet">
+	<![CDATA[
+	SELECT * 
+	FROM g_order join goods using (goods_id)
+	WHERE order_date BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') 
+                   AND TO_DATE(#{endDate}, 'YYYY-MM-DD')+0.99999
+    ]]>
+	</select>
+	
+	<update id="updateOrderSt">
+	update g_order set
+    REFUND = #{ changeOs }
+    where order_no = #{ oId }
+	</update>
+	
+	<select id="getCate1" resultType="Integer">
+	<![CDATA[ 
+	SELECT count(*)
+	FROM g_order join goods using (goods_id)
+	where GCATE_NO = 1  and REFUND ='payed' and TO_CHAR(order_date,'yyyy-mm-dd') > sysdate -1
+		]]>
+		
+	</select>
+	<select id="getCate2" resultType="Integer">
+	<![CDATA[ 
+	SELECT count(*)
+	FROM g_order join goods using (goods_id)
+	where GCATE_NO = 2  and REFUND ='payed' and TO_CHAR(order_date,'yyyy-mm-dd') > sysdate -1
+		]]>
+	</select>
+	
+	<select id="getCate3" resultType="Integer">
+	<![CDATA[ 
+	SELECT count(*)
+	FROM g_order join goods using (goods_id)
+	where GCATE_NO = 3  and REFUND ='payed' and TO_CHAR(order_date,'yyyy-mm-dd') > sysdate -1
+		]]>
+	</select>
+	
+	<select id="getTodaysales" resultType="Integer">
+	<![CDATA[ 
+	SELECT SUM(TO_NUMBER(ORDER_PRICE))
+	FROM  g_order
+	WHERE TO_CHAR(order_date,'yyyy-mm-dd') > sysdate -1 and REFUND ='payed'
+	]]>
+	</select>
+	
+	<select id="topList" resultMap="orderResultSet">
+	<![CDATA[ 
+	select *
+	from(select goods_id, goods_name
+		from g_order join  goods using (goods_id)
+		where REFUND ='payed'
+		group by goods_id, goods_name
+		order by count(goods_id) desc)
+	where rownum <=10
+		]]>
+	</select>
+	
+	<!-- 증감률계산 -->
+	<select id="getVariance" resultType="Integer">
+		<![CDATA[ 
+	select round(((select SUM(TO_NUMBER(ORDER_PRICE))FROM  g_order WHERE TO_CHAR(order_date,'yyyy-mm-dd') >= sysdate -1 and REFUND ='payed')
+	- (SELECT SUM(TO_NUMBER(ORDER_PRICE)) FROM  g_order
+	WHERE TO_CHAR(order_date,'yyyy-mm-dd') > sysdate -2 and TO_CHAR(order_date,'yyyy-mm-dd') <  sysdate -1 and REFUND ='payed'))
+	/(SELECT SUM(TO_NUMBER(ORDER_PRICE))FROM  g_order WHERE TO_CHAR(order_date,'yyyy-mm-dd') > sysdate -2 and TO_CHAR(order_date,'yyyy-mm-dd') <  sysdate -1 and REFUND ='payed') *100, 1)
+	from g_order where rownum = 1
+			]]>
+	</select>
+	
+	<select id="monthAmount" resultMap="amountResultSet">
+	SELECT 
+    TO_CHAR(order_date, 'mm') as month,
+    SUM(TO_NUMBER(ORDER_PRICE)) as amount
+	FROM g_order
+	where REFUND ='payed'
+	GROUP BY TO_CHAR(order_date, 'mm')
+	order by TO_CHAR(order_date, 'mm')
+	</select>
+	
+	<resultMap type="com.withtrip.WithTrip.admin.model.vo.Monthly" id="amountResultSet">
+	<result column="month" property="month"/>
+	<result column="amount" property="amount"/>
+	</resultMap>
+</mapper>

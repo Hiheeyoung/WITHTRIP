@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="goodsMapper">
+  
+  <!-- 게시글 작성 -->
+  <insert id="insertGoods">
+     insert into goods
+     values(seq_gid.nextval, #{goodsName}, #{price}, #{stock}, #{gcateNo}, #{gContent}, DEFAULT, #{goodsBrand}, #{goodsSize}, #{goodsColor})
+  </insert>
+  
+  <!-- 게시글에 사진 첨부 -->
+  <insert id="insertFiles">
+     insert into attachment
+     values(seq_fid.nextval, #{originName}, #{changeName}, #{filePath}, sysdate, #{fileLevel}, DEFAULT, 2, seq_gid.currval, null)
+  </insert>
+  
+  <!-- 게시글 총 개수 조회  -->
+  <select id="getListCount" resultType="_int">
+     select count(*)
+     from goods
+        join attachment on(goods_id = board_id)
+     where status = 'Y' and file_status = 'Y' and file_level = 0 and file_type = 2
+  </select>
+  
+  <!-- 게시글 리스트 조회 -->
+  <select id="getGoodsList" resultMap="GoodsResultMap">
+     select *
+     from goods 
+        join attachment on(goods_id = board_id)
+     where status = 'Y' and file_status = 'Y' and file_level = 0 and file_type = 2
+     order by goods_id desc
+  </select>
+  
+  
+  <!-- resultMap -->
+  <resultMap type="Goods" id="GoodsResultMap">
+     <id column="GOODS_ID" property="goodsId"/>
+     <result column="GOODS_NAME" property="goodsName"/>
+     <result column="PRICE" property="price"/>
+     <result column="STOCK" property="stock"/>
+     <result column="GCATE_NO" property="gcateNo"/> 
+     <result column="G_CONTENT" property="gContent"/>
+     <result column="BOARD_ID" property="boardId"/>
+     <result column="ORIGIN_NAME" property="originName"/>
+     <result column="CHANGE_NAME" property="changeName"/>
+     <result column="STATUS" property="status"/>
+     <result column="BRAND" property="goodsBrand"/>
+     <result column="G_SIZE" property="goodsSize"/>
+     <result column="COLOR" property="goodsColor"/>
+  </resultMap>
+  
+
+  <!-- 게시글 상세보기 -->
+  <select id="selectGoods" resultMap="GoodsResultMap">
+    select *
+     from goods
+     where goods_id = #{gId} and status = 'Y'
+  </select>
+  
+  <!-- 게시글 상세보기에 들어갈 사진 가져오기 -->
+    <select id="selectFiles" resultMap="AttachResultMap">
+     select *
+     from attachment
+     where board_id = #{gId} and file_status = 'Y' and file_type = 2
+  </select>
+  
+  <resultMap type="Attachment" id="AttachResultMap">
+    <id column="FILE_ID" property="fileId"/>
+    <result column="ORIGIN_NAME" property="originName"/>
+    <result column="CHANGE_NAME" property="changeName"/>
+    <result column="FILE_PATH" property="filePath"/>
+    <result column="UPLOAD_DATE" property="uploadDate"/> 
+    <result column="FILE_LEVEL" property="fileLevel"/>
+    <result column="FILE_STATUS" property="fileStatus"/>
+    <result column="FILE_TYPE" property="fileType"/>
+    <result column="BOARD_ID" property="boardId"/>
+    <result column="REPLY_ID" property="replyId"/>
+  </resultMap>
+  
+  <!-- 게시글 수정 -->
+  <update id="updateGoods">
+     update goods set goods_name = #{goodsName}, price = #{price}, stock = #{stock}, gcate_no = #{gcateNo}, 
+     g_content = #{ gContent }, brand = #{ goodsBrand }, g_size = #{ goodsSize }, color = #{ goodsColor }
+     where status = 'Y' and goods_Id = #{ goodsId }             
+  </update>
+  
+  <!-- 게시글 첨부파일 수정 -->
+  <update id="updateFiles">
+     update attachment set origin_name = #{ originName }, change_name = #{ changeName }, upload_date = sysdate, 
+                   file_level = #{ fileLevel }
+     where file_status = 'Y' and file_type = 2 and board_id = #{ boardId } and file_level = #{ fileLevel } 
+  </update>
+  
+  <!-- 게시글 삭제 -->
+  <delete id="deleteGoods">
+     update goods set status = 'N'
+     where goods_id = #{gId}
+  </delete>
+  
+  <!-- 첨부파일 삭제 -->
+  <delete id="deleteFiles">
+     update Attachment set file_status = 'N' 
+     where board_id = #{gId} and file_type = 2
+  </delete>
+  
+  <!-- 검색 게시글 개수 -->
+  <select id="getSearchCount" resultType="_int">
+     select count(*)
+     from goods
+     where status = 'Y' and goods_name like '%' || #{searchgName} || '%'
+  </select>
+  
+  <!-- 검색 게시글 리스트 -->
+  <select id="selectSearchList" resultMap="GoodsResultMap">
+     select *
+     from goods
+        join attachment on(goods_id = board_id)
+    where goods_name like '%' || #{searchgName} || '%' and status = 'Y' and file_status = 'Y' and file_level = 0 and file_type = 2
+    order by goods_id desc
+  </select>
+  
+  <!-- 카테고리 리스트 -->
+  <select id="selectCateList" resultMap="GoodsResultMap">
+     select *
+     from goods
+        join attachment on(goods_id = board_id)
+     where status = 'Y' and file_status = 'Y' and file_level = 0 and file_type = 2
+   <choose>
+        <when test="cate == 'bag'">
+         and gcate_no = 1 
+        </when>
+        <when test="cate == 'safety'">
+           and gcate_no = 2
+        </when>
+        <otherwise>
+           and gcate_no = 3
+        </otherwise>
+   </choose>      
+     order by goods_id desc   
+  </select>
+  
+  <!-- 카테고리 게시글 개수 조회 -->
+  <select id="getCateCount" resultType="_int">
+     select count(*)
+     from goods
+     where status = 'Y'
+     <choose>
+        <when test="category == 'bag'">
+           and gcate_no = 1
+        </when>
+        <when test="category == 'safety'">
+           and gcate_no = 2
+        </when>
+      <otherwise>
+         and gcate_no = 3
+      </otherwise>
+     </choose>
+  </select>
+  
+
+  <!-- 메인 화면 리스트  조회 -->
+  <select id="selectMainGoods" resultMap="GoodsResultMap">
+     <![CDATA[
+     select *
+    from (select goods_id, goods_name, g_content, change_name, price, gcate_No, brand, g_size, color, stock
+          from goods 
+            join attachment on(goods_id = board_id)
+          where status = 'Y' and file_status = 'Y' and file_level = 0 and stock > 0 and file_type = 2
+          order by goods_id desc)
+    where rownum <= 3
+    ]]>
+  </select>
+  
+  <!-- 댓글 등록 -->
+  <insert id="insertReply" >
+     insert into reply
+     values(seq_rpid.nextval, sysdate, default, #{replyContent}, sysdate, #{email}, #{goodsId})
+  </insert>
+
+  <!-- 댓글에 사진 첨부 -->
+  <insert id="insertReplyFiles">
+  	insert into attachment 
+  	values(seq_fid.nextval, #{originName}, #{changeName}, #{filePath}, sysdate, 
+  			#{fileLevel}, default, 3, #{boardId}, seq_rpid.currval)
+  </insert>
+  
+  <!-- 댓글 목록 조회 -->
+  <select id="selectReplyList" resultMap="replyResultSet">
+    select create_date, email, goods_id, manager_yn, r.MODIFY_DATE, nickname,change_name, reply_content, reply_id
+	  from reply r
+	     join member using (email)
+	     join goods using (goods_id)
+	  where goods_id = #{gId} and reply_status = 'Y'
+	  order by reply_id desc
+  </select>
+  
+  <!-- 댓글 첨부 파일 조회 -->
+  <select id="selectRFiles" resultMap="AttachResultMap">
+	  select board_id, change_name, file_id, reply_id
+	  from attachment
+	       where file_type = 3 and board_id = #{gId}
+	     order by reply_Id desc   
+  </select>	
+   
+  <resultMap type="Reply" id="replyResultSet">
+     <id column="REPLY_ID" property="replyId"/>
+     <result column="CREATE_DATE" property="createDate"/>
+     <result column="REPLY_STATUS" property="replyStatus"/>
+     <result column="REPLY_CONTENT" property="replyContent"/>
+     <result column="MODIFY_DATE" property="modifyDate"/>
+     <result column="EMAIL" property="email"/>
+     <result column="GOODS_ID" property="goodsId"/>
+     <result column="CHANGE_NAME" property="profileImg"/>
+     <result column="MANAGER_YN" property="manager_yn"/>
+     <result column="ATTACH_FILE" property="attach_file"/>
+  </resultMap>
+  
+  <!-- 댓글 수정 -->
+  <update id="updateReply">
+     update reply 
+        set reply_content = #{ replyContent }, modify_date = sysdate
+     where reply_id = #{ replyId } and reply_status = 'Y'   
+  </update>
+  
+  <!-- 댓글 삭제 -->
+  <delete id="deleteReply">
+    update reply set reply_status = 'N'
+     where reply_id = ${replyId}
+  </delete>
+  
+  <!-- 판매 중인 상품 개수 조회 -->
+  <select id="getSaleGCounts" resultType="_int">
+     select count(*)
+     from goods
+     where status = 'Y' and stock > 0
+  </select>
+  
+  <!-- 판매 중인 상품 리스트 조회 -->
+  <select id="getSaleGoodsList" resultMap="GoodsResultMap">
+     select * 
+     from goods
+        join attachment on(goods_id = board_id)
+     where stock > 0 and status = 'Y' and file_level = 0 and file_type = 2
+     order by goods_id desc
+  </select>
+  
+  <!--  선택 타입으로 리스트 조회(품절 상품 포함 시) -->
+  <select id="selectType" resultMap="GoodsResultMap">
+    select *
+    from (select goods_id, sum(order_price) sales, goods_name, price, stock, gcate_no, change_name, brand
+           from goods
+              full outer join attachment on(goods_id = board_id)
+              full outer join g_order using(goods_id)
+         	where status = 'Y' and file_status = 'Y' and file_level = 0 and file_type = 2
+         GROUP BY goods_id, goods_name, price, stock, gcate_no, g_content, board_id, origin_name, change_name, status, brand, g_size, color)
+       <choose>
+          <when  test="select_type == 'new'">
+               order by goods_id desc
+          </when>
+          <when  test="select_type == 'sale'">
+               order by sales desc nulls last, goods_id desc nulls last
+          </when>
+          <when  test="select_type == 'low'">
+               order by lpad(price, 9, 0) asc
+          </when>
+          <when  test="select_type == 'high'">
+               order by lpad(price, 9, 0) desc
+          </when>
+         </choose>
+  </select>
+
+  <!--  선택 타입으로 리스트 조회(품절 상품 제외 시) -->	
+  <select id="selectTypeSoldOut" resultMap="GoodsResultMap">
+  	select *
+    from (select goods_id, sum(order_price) sales, goods_name, price, stock, gcate_no, change_name, brand
+           from goods
+              full outer join attachment on(goods_id = board_id)
+              full outer join g_order using(goods_id)
+         	where status = 'Y' and file_status = 'Y' and file_level = 0 and file_type = 2 and stock > 0
+         GROUP BY goods_id, goods_name, price, stock, gcate_no, g_content, board_id, origin_name, change_name, status, brand, g_size, color)
+       <choose>
+          <when  test="select_type == 'new'">
+               order by goods_id desc
+          </when>
+          <when  test="select_type == 'sale'">
+               order by sales desc nulls last, goods_id desc nulls last
+          </when>
+          <when  test="select_type == 'low'">
+               order by lpad(price, 9, 0) asc
+          </when>
+          <when  test="select_type == 'high'">
+               order by lpad(price, 9, 0) desc
+          </when>
+         </choose>
+  </select>
+  
+</mapper>

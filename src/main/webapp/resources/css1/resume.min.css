@@ -1,0 +1,458 @@
+/*!
+ * Start Bootstrap - Resume v4.0.0-beta.2 (https://startbootstrap.com/template-overviews/resume)
+ * Copyright 2013-2017 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-resume/blob/master/LICENSE)
+ */body{font-family: 'Do Hyeon', sans-serif;padding-top:54px;
+ color:#868e96}
+ @media (min-width:992px)
+ {body{padding-top:0;padding-left:0rem}}
+ h1,h2,h3,h4,h5,h6{
+/* 	 font-family:'Saira Extra Condensed',serif; */
+	 font-weight:700;
+	 text-transform:uppercase;
+	 color:#343a40}
+ h1{font-size:6rem;
+ line-height:5.5rem}
+ h2{font-size:3.5rem}
+ .subheading{text-transform:uppercase;
+	 font-weight:500;
+	 font-family:'Saira Extra Condensed',serif;
+	 font-size:1.35rem}
+ .list-social-icons a{color:#495057}
+ .list-social-icons a:hover{color:#32B5F6}
+ .list-social-icons a .fa-lg{font-size:1.75rem}
+ .list-icons{font-size:3rem}
+ .list-icons .list-inline-item i:hover{color:#6495ED}
+ #sideNav .navbar-nav .nav-item .nav-link{font-weight:600;text-transform:uppercase}
+ 
+
+ 
+ 
+ @media (min-width:992px)
+ {#sideNav{
+ 	 text-align:center;
+ 	 position: absolute;
+	 top:0;
+	 left:0;
+	 flex-direction:column;
+	 width:20rem;
+	 height:80vh; /* 이 부분을 푸터 사이즈에 맞게 줄여주시구 !!!! 만약 기둥이 네비바 침범한다면 네비바에 z-index : 어마무시하게 부탁드려용*/
+	 margin: 0px 0px; /**왼쪽 마진*/
+	 border-radius: 5px;
+	 margin-top: 65px;
+	 z-index: 100;
+ }
+ #sideNav .navbar-brand{
+ 	display:flex;
+ 	margin:auto auto 0;
+ 	padding:.5rem}
+ 	
+ #sideNav .navbar-brand .img-profile{
+ 	 max-width:10rem;
+	 max-height:10rem;
+	 border:.5rem solid rgba(255,255,255,.2)}
+	 
+ #sideNav .navbar-collapse{
+ 	display:flex;
+ 	align-items:flex-start;
+ 	flex-grow:0;
+ 	width:100%;
+ 	margin-bottom:auto}
+ 	
+ #sideNav .navbar-collapse .navbar-nav{
+ 	flex-direction:column;
+ 	width:100%}
+ 	
+ #sideNav .navbar-collapse .navbar-nav .nav-item{display:block}
+ #sideNav .navbar-collapse .navbar-nav .nav-item .nav-link{display:block; font-size: 16px;}}
+ section.resume-section{	
+ 	border-bottom:1px solid #dee2e6;
+ 	padding-top:5rem!important;
+ 	padding-bottom:5rem!important}
+ section.resume-section .resume-item .resume-date{min-width:none}
+ @media (min-width:768px){section.resume-section{min-height:100vh}
+ section.resume-section .resume-item .resume-date{min-width:18rem}}
+ @media (min-width:992px){section.resume-section{
+ 	padding-top:3rem!important;
+ 	padding-bottom:3rem!important}}
+ .bg-primary{background-color:#6495ED!important}
+ .text-primary{color:#6495ED!important}
+ a{color:#000;
+ 
+ }
+ a:active,a:focus,a:hover{color:#824027;
+ cursor: pointer;}
+ /**기둥 색깔***/
+
+/*마이페이지 (동행자후기) css*/
+body{
+
+    background: #304FFE;
+    margin: 0;
+    font-size: .8125rem;
+    font-weight: 400;
+    line-height: 1.5385;
+    text-align: left;
+    background-color: #fff;
+    color: #505050;
+} 
+
+#nickName{font-size: 18px; font-weight: bold; color: #000;}
+
+
+input[type=checkbox]{display:none;}
+input[type=checkbox]+label{display : inline-block;  margin-left:130px; height: 50px; width:200px;
+ 									line-height: 20px; text-align: center; font-weight: bold; font-size: 18px; color: #000;}
+input[type=checkbox]:checked+label { border-bottom: 3px solid #6495ED;}
+
+.cardDiv{margin-left: 270px;}
+#reviewPost{ border: none; background-color: #6495ED; width: 100px; height: 38px; 
+		border-radius: 5px; 
+		color: white;
+		display: block;
+		margin-left: 90%;
+		margin-bottom: 10px;
+		}
+		
+
+.visible-xs {
+    display: none!important;
+}
+
+
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&family=Poppins:wght@600&display=swap');
+*{
+    box-sizing: border-box;
+}
+
+/*table css*/
+
+
+table{ text-align: center;}
+thead{
+    font-family: 'Poppins', sans-serif;
+    font-weight: bolder;
+    font-size: 20px;
+    color: #000;
+}
+.name{
+    display: inline-block;
+}
+.bg-blue{
+    background-color: #fff;
+    border-radius: 8px;
+}
+.fa-check,.fa-minus{
+    color: blue;
+}
+.bg-blue:hover{
+    background-color:#4285F4;
+    color: #eee;
+    cursor: pointer;
+}
+.bg-blue:hover .fa-check,
+.bg-blue:hover .fa-minus{
+    background-color: #4285F4;
+    color: #eee;
+}
+
+.table thead th,.table td{
+    border:none;
+
+}
+th, td {
+  border-bottom: 1px solid #444444;}
+
+.table tbody td:first-child{
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+}
+.table tbody td:last-child{
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#spacing-row{
+	height:2px;
+}
+
+.card {
+    background-color: white !important;
+    border: none !important;
+    border-radius: 0px !important;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px !important;
+    width : 1100px;
+}
+
+.card:hover {
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px !important;
+}
+
+<!--계정 관리-->
+.updateMyInfo{
+	font-family: 'Anton', sans-serif;
+font-family: 'Square Peg', cursive;
+}
+#reason{
+
+	color: #black;
+	font-weight: bold;
+	font-size: 18px;
+	padding: 10px;
+}
+
+#enquiry{
+	border : none;
+	float: right;
+	height: 35px;
+	width: 100px;
+	cursor: pointer;
+}
+#status{
+	float: right;
+}
+
+#myLike{
+	padding:5px;
+	font-weight: medium;
+	font-size: 15px;
+	background-color: #6495ED;
+	color:white;
+	border-radius: 12px;
+	
+	
+}
+.card-body{
+	
+	padding:8px;
+	
+}
+.row{
+	padding:10px;
+}
+.updateText{
+	width:300px; 
+	height:40px; 
+	font-size: large;
+}
+
+.updateText:focus {
+	outline: 2px solid #6495ED;
+	border: none;
+}
+.like{
+	text-align: center;
+}
+#myNickName{
+	padding:5px;
+	font-weight: normal;
+	font-size: 20px;
+	color:black;
+	border-radius: 10px;
+		
+}
+.infoBtn{
+	background-color: #6495ED; 
+	width: 30%; 
+	font-size:15px;
+	color:white;
+	cursor: pointer;
+	border-radius: 5px;
+	border:none;
+	height: 35px;
+	
+}
+.infoBtn:hover{
+	background-color: black;
+	color: #fff;
+}
+.form-check{
+	text-align: center;
+}
+#profile{
+	cursor: pointer;
+}
+#reason1{
+	color: #black;
+	font-weight: bold;
+	font-size: 18px;
+	padding: 30px;
+}
+.area{
+	padding:5px;
+	
+}
+
+.rbtn{
+	width: 90px;
+	height: 30px;
+	border-radius: 50px;
+	border: none;
+	cursor: pointer;
+	background-color: #fff;
+	font-size: 16px;
+	font-size: 15px;
+}
+.rbtn:hover{
+	background-color: #000;
+	color : #fff;
+}
+
+/*모달창*/
+.modalBg {
+  position: fixed;
+  top:0; 
+  left: 0; 
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.3);
+  visibility: hidden;
+}
+
+#modalshow {
+   opacity: 1;
+   z-index: 1000;
+   transition: all 0.5s;
+}
+              
+.modalwindow {
+   position: relative;
+   width: 100%;
+   height: 100%;
+}
+.modalpopup::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera*/
+}
+.modalpopup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+    overflow : auto;
+  	border-radius : 10px;
+    width:550px;
+    height: 410px;
+    transform: translate(-50%, -40%);
+}
+
+#modalshow .modalpopup {
+    transform: translate(-50%, -50%);
+    transition: all 0.5s;
+}
+
+#modalclose{
+	border-radius: 5px;
+	transition: all 0.5s;
+}
+
+#report-button{
+	border-radius: 5px;
+	border : none;
+	
+}
+
+.report-page{
+  width:550px;
+  text-align:center;
+  overflow-x:hidden;
+  margin:0;
+  background-color:#f9f9f9;
+}
+
+.report-header {
+  text-align:left;
+  margin:20px 75px 0 75px;
+  padding-bottom:10px;
+  font-size:16pt;
+  border-bottom:3px solid #6495ED;
+  color: #000;
+}
+
+.report-content {
+  margin:30px 0 20px 85px;
+  text-align:left;
+}
+
+.report-div {
+  margin-bottom:15px;
+  font-size: 14px;
+}
+
+.report-div span {
+  font-size:14pt;
+  color:#6495ED;
+}
+
+
+.report-button {
+  padding-bottom:50px;
+}
+
+.report-button button {
+  height:33px;
+  background-color: #6495ED;
+  border:none;
+  color:white;
+  padding-left:15px;
+  padding-right:15px;
+  text-align:center;
+  text-decoration: none;
+  display: inline-block;
+  cursor:pointer;
+  border-radius: 10px;
+  transition: background 0.3s ease-in-out;
+}
+
+.report-button button:hover{
+	background: #000000;
+	z-index: 2;
+	
+}
+.selectButton{
+	margin-left: -13px;
+	font-size: 15px;
+}
+#selectOp{
+  width: 300px;
+  height: 35px;
+  background: url('https://freepikpsd.com/media/2019/10/down-arrow-icon-png-7-Transparent-Images.png') calc(100% - 5px) center no-repeat;
+  background-size: 20px;
+  padding: 5px 30px 5px 10px;
+  border-radius: 4px;
+  outline: 0 none;
+  margin-left: 10px;
+}
+
+#selectOp option{
+  background: #fff;
+  color: #6495ED;
+  padding: 3px 0;
+  font-size : 15px;
+}
+
+
+.why{
+	resize:none;
+	text-align: left;
+}
+
+.why:focus{
+	box-shadow: 0 0 0 2px #6495ED !important;
+	border: none !important;
+}
+
+
+
+.reason{
+	margin-bottom: 10px;
+	margin-left: 50px;
+}
+
+#infoTitle{
+	color: #000;
+	font-size: 15px;
+	font-weight: bold;
+}
+

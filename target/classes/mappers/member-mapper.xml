@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper">
+
+<!-- 	<select id="login" resultMap="memberResultSet"> -->
+<!-- 		select * from member where email=#{email} and user_pwd = #{userPwd} and user_status='Y' and enroll_type = 'W' -->
+<!-- 	</select> -->
+
+	<select id="login" resultMap="memberResultSet">
+	   select * from 
+	   member 
+	   where email=#{email} 
+	<!--       and user_pwd=#{userPwd} -->
+	   and (user_status = 'Y' or user_status = 'S')
+	   and enroll_type = 'W'
+	</select>
+	
+	<select resultMap="memberResultSet" id="kakaoLogin">
+		select * from member where email=#{email}and user_status = 'Y'and enroll_type = 'K' 
+	</select>
+	
+	<resultMap type="Member" id="memberResultSet">
+		<id column="EMAIL" property="email"/>
+		<result column="MEMBER_NO" property="member_no"/>
+		<result column="USER_NAME" property="userName"/>
+		<result column="USER_PWD" property="userPwd"/>
+		<result column="NICKNAME" property="nickName"/>
+		<result column="PHONE" property="phone"/>
+		<result column="ADDRESS" property="address"/>
+		<result column="FILE_PATH" property="filePath"/>
+		<result column="ORIGIN_NAME" property="originName"/>
+		<result column="CHANGE_NAME" property="changeName"/>
+		<result column="USER_STATUS" property="userStatus"/>
+		<result column="MANAGER_YN" property="managerYN"/>
+		<result column="ENROLL_DATE" property="enrollDate"/>
+		<result column="MODIFY_DATE" property="modifyDate"/>
+		<result column="REPORT_COUNT" property="reportCount"/>
+		<result column="ENROLL_TYPE" property="enrollType"/>
+	</resultMap>
+	
+	
+	<update id="findPwd">
+		update member 
+		set user_pwd=#{encPwd}
+		where email=#{myEmail} and enroll_type='W'
+	</update>
+
+	<select resultMap="memberResultSet" id="findId">
+		select * from member where user_name=#{userName} and phone=#{phone} and enroll_type='W' 
+	</select>
+
+	<select id="findKakao" resultType="Member" parameterType="java.util.HashMap">
+		select * from member where email=#{email} and nickName=#{nickname} and enroll_type='K' 
+	</select>
+	
+	<insert id="insertkakao">
+		insert into member 
+		values(#{email}, #{userName}, #{userPwd},#{nickName}, #{phone}, #{address}, null,null, null, default, default,sysdate, sysdate, default, 'K', seq_mno.nextval) 
+	</insert>
+	
+	<select id="countKakao" resultType="_int">
+		select count(*)from member where email=#{email} and enroll_type= 'K' 
+	</select>
+	
+	<select id="countMember" resultType="_int">
+		select count(*)from member where email=#{email} and enroll_type= 'W' 
+	</select>
+	
+	<select resultMap="memberResultSet" id="selectKakao">
+		select *from member where email=#{email} and enroll_type= 'K' 
+	</select>
+	
+	<select id="checkNick" resultType="_int">
+		select count(*)from member where nickName=#{nickName} 
+	</select>
+	
+	<insert id="insertMember">
+		insert into member 
+		values(#{email}, #{userName}, #{userPwd}, #{nickName}, #{phone}, #{address},#{filePath}, #{originName}, #{changeName}, 'Y', 'N', sysdate, sysdate, 0, 'W' ,seq_mno.nextval) 
+	</insert>
+	
+	<select id="checkId" resultType="_int">
+		select count(*)from member where email=#{email} 
+	</select>
+
+
+	<!-- 여기부터 마이페이지 관련 -->
+	
+	<update id="deleteUser">
+		update member
+		set user_status = 'N'
+		where email = #{userEmail}
+	</update>
+	
+	<update id="updateUser">
+		update member
+		set user_name = #{userName}, nickname = #{nickName}, phone = #{phone}, address = #{address},
+			<if test="originName != null">
+			origin_name = #{originName},
+			</if>
+			change_name = #{changeName}, modify_date = sysdate
+		where email = #{email}
+	</update>
+	
+	<select id="selectWrittenReviewListCount" resultType="_int">
+		select count(*)
+		from trip_review
+		where review_writer = #{email} and treview_status = 'Y'
+	</select>
+	
+	<select id="selectWrittenReviewList" resultMap="tripReviewResultSet">
+		select *
+		from trip_review
+     		 right outer join member using (email)
+		where review_writer = #{email} and treview_status = 'Y'
+		order by review_id desc
+	</select>
+	
+	<resultMap type="TripReview" id="tripReviewResultSet">
+		<id column="REVIEW_ID" property="review_id"/>
+		<result column="REVIEW_CONTENT" property="review_content"/>
+		<result column="REVIEW_WRITER" property="review_writer"/>
+		<result column="EMAIL" property="email"/>
+		<result column="NICKNAME" property="review_nickname"/>
+		<result column="REVIEW_DATE" property="review_date"/>
+		<result column="TREVIEW_STATUS" property="treview_status"/>
+		<result column="MEMBER_NO" property="member_no"/>
+		<result column="FILE_PATH" property="file_path"/>
+		<result column="ORIGIN_NAME" property="origin_name"/>
+		<result column="CHANGE_NAME" property="change_name"/>
+		<result column="USER_STATUS" property="user_status"/>
+	</resultMap>
+	
+	<select id="selectReviewListCount" resultType="_int">
+		select count(*)
+		from trip_review
+		     right outer join member using (email)
+		where email = (select email
+		                from member
+		                where member_no = #{mNo}) 
+		      and treview_status = 'Y' and user_status = 'Y'
+		order by review_id desc
+	</select>
+	
+	<select id="selectReviewList" resultMap="tripReviewResultSet">
+		select *
+		from trip_review
+		     right outer join member using (email)
+		where email = (select email
+		                from member
+		                where member_no = #{mNo}) 
+		      and treview_status = 'Y' and user_status = 'Y'
+		order by review_id desc
+	</select>
+	
+	<select id="checkUserPwd" resultType="_int">
+		select count(*)
+		from member
+		where user_pwd = #{userPwd} and email = #{email} and user_status = 'Y'
+	</select>
+	
+	<select id="selectGoodsReviewListCount" resultType="_int">
+		select count(*)
+		from reply
+		where email = #{email} and reply_status = 'Y'
+	</select>
+	
+	<select id="selectWrittenGoodsReviewList" resultMap="replyResultSet">
+		select *
+		from reply
+		    join goods using (goods_id)
+		where email = #{email} and reply_status = 'Y'
+		order by reply_id desc
+	</select>
+	
+	<resultMap type="Reply" id="replyResultSet">
+		<id column="REPLY_ID" property="replyId"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="REPLY_STATUS" property="replyStatus"/>
+		<result column="REPLY_CONTENT" property="replyContent"/>
+		<result column="MODIFY_DATE" property="modifyDate"/>
+		<result column="EMAIL" property="email"/>
+		<result column="GOODS_ID" property="goodsId"/>
+		<result column="GOODS_NAME" property="goods_name"/>
+	</resultMap>
+	
+	<select id="selectWrittenTripListCount" resultType="_int">
+		select count(*)
+		from trip_board
+		where email = #{email} and board_status = 'Y'
+	</select>
+	
+	<select id="selectWrittenTripList" resultMap="tripBoardResultSet">
+		select *
+		from trip_board
+		    join attachment on (trip_id = board_id)
+		where email = #{email} and board_status = 'Y' and file_type = 1
+		order by trip_id desc
+	</select>
+	
+	<resultMap type="TripBoard" id="tripBoardResultSet">
+		<id column="TRIP_ID" property="tripId"/>
+		<result column="BOARD_TITLE" property="boardTitle"/>
+		<result column="BOARD_CONTENT" property="boardContent"/>
+		<result column="CREATE_DATE" property="createDate"/>
+		<result column="MODIFY_DATE" property="modifyDate"/>
+		<result column="BOARD_COUNT" property="boardCount"/>
+		<result column="BOARD_STATUS" property="boardStatus"/>
+		<result column="TRIP_START" property="tripStart"/>
+		<result column="TRIP_END" property="tripEnd"/>
+		<result column="PART_COUNT" property="partCount"/>
+		<result column="EMAIL" property="email"/>
+		<result column="PREFERENCE" property="preference"/>
+		<result column="ORIGIN_NAME" property="originalFileName"/>
+		<result column="CHANGE_NAME" property="renameFileName"/>
+		<result column="TRIP_ID" property="tripId"/>
+		<result column="MEMBER_NO" property="memberNo"/>
+	</resultMap>
+	
+	<update id="updatePwd">
+		update member
+		set user_pwd = #{userPwd}
+		where email = #{email}
+	</update>
+	
+	<insert id="insertReview">
+		insert into trip_review
+		values(seq_rvid.nextval, #{review_content}, #{review_writer}, #{email}, sysdate, default)
+	</insert>
+	
+	<insert id="insertReport">
+		insert into report
+		values(seq_rid.nextval, #{report_content}, sysdate, default, #{rcate_no}, #{report_user}, #{target_user})
+	</insert>
+	
+	<select id="selectReportToMe" resultType="Report">
+		select * 
+		from report
+		where report_yn = 'Y' and target_user = #{email}
+	</select>
+	
+	<select id="selectMember" resultMap="memberResultSet">
+		select *
+		from member
+		where member_no = #{mNo} and user_status = 'Y'
+	</select>
+	
+	<select id="getMyOrderListCount" resultType="_int">
+		select count(*)
+		from g_order
+		where email = #{email}
+	</select>
+	
+	<select id="getMyOrderList" resultMap="orderResultSet">
+      select *
+      from g_order join goods using (goods_id)
+      where email = #{email}
+      order by order_date desc
+    </select>
+	
+	<resultMap type="Order" id="orderResultSet">
+		<id column="ORDER_NO" property="orderNo"/>
+		<result column="ORDER_DATE" property="orderDate"/>
+		<result column="ORDER_PRICE" property="price"/>
+		<result column="REFUND" property="refund"/>
+		<result column="ORDER_ADDRESS" property="orderAddress"/>
+		<result column="ZIP_CODE" property="zipCode"/>
+		<result column="SHIP_NO" property="shipNo"/>
+		<result column="RECIPIENT" property="recipient"/>
+		<result column="EMAIL" property="email"/>
+		<result column="GOODS_ID" property="goodsId"/>
+		<result column="PAY_NO" property="payNO"/>
+		<result column="APPROVAL_NO" property="approvalNo"/>
+		<result column="PHONE" property="phone"/>
+		<result column="GOODS_NAME" property="goodsName"/>
+		<result column="RECEIPT_URL" property="receiptUrl"/>
+	</resultMap>
+	
+</mapper>
+
