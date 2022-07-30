@@ -1,6 +1,7 @@
 # 🛫WITHTRIP🛬
 <details>
   <summary>Index</summary>
+  <div markdown="1">  
     1. 개요<br>
     2. 내용<br>
     3. 구현 기능<br>
