@@ -72,6 +72,9 @@
     - 관리자의 경우 회원의 부적절한 댓글 삭제 가능
 ---
 ####  &nbsp;&nbsp;2. 댓글(리뷰) 작성
+<img src="https://user-images.githubusercontent.com/110291925/182148254-46ec81fc-6ce2-4fa4-be69-a11424f5493a.gif" width="800" height="600"/>
+
+
   - **구현 기능 설명**
     - 후기 댓글은 로그인이 되어있는 경우에만 작성 가능
     - 사진은 최대 3장까지만 첨부할 수 있도록 하였고 첨부파일의 형식은 jpg, jpeg, png 형식만 등록 가능하도록 구현
@@ -79,7 +82,7 @@
     - 후기 작성 버튼 클릭 후 바로 댓글 목록 조회가 가능하도록 구현
 ---
 ####  &nbsp;&nbsp;3. 댓글(리뷰) 수정
-
+<img src="https://user-images.githubusercontent.com/110291925/182148175-a3bfbff2-b58a-4769-b8c1-f6588d94e1f4.gif" width="800" height="600"/>
 
 
   - **구현 기능 설명**
@@ -87,12 +90,18 @@
     - 내용 수정 후 등록 버튼 클릭 시 버튼이 다시 수정 버튼으로 바뀌며 수정된 내용과 수정 일자출력
 ---
 ####  &nbsp;&nbsp;4. 댓글(리뷰) 삭제
+<img src="https://user-images.githubusercontent.com/110291925/182148118-d422f548-bf59-41fa-afea-44df8541b286.gif" width="800" height="600"/>
+
+
   - **구현 기능 설명**
     - 삭제 버튼 클릭 시 삭제 확인 alert창이 출력되며 확인 클릭 시 해당 댓글 삭제
     - 삭제된 댓글은 DB에서 삭제 상태로 변경됨 
 ---
 ### 결제 / 환불
 ####  &nbsp;&nbsp;1. 상품 결제
+<img src="https://user-images.githubusercontent.com/110291925/182147900-3f741f6d-2e04-421b-8fd2-1f0f850d01ae.gif" width="800" height="600"/>
+
+
   - **구현 기능 설명**
     - 배송지 변경 버튼 클릭 시 카카오 api로 주소 검색 가능
     - 결제 화면에서 결제하기 버튼 클릭 시 i’mport 결제 api가 호출되며 결제 진행
@@ -100,6 +109,9 @@
     - 결제 성공 후 “결제가 완료되었습니다”라는 alert창 출력, 결제 내용을 확인할 수 있는 결제 완료 페이지로 이동
 ---
 ####  &nbsp;&nbsp;2. 구매 상품 환불
+<img src="https://user-images.githubusercontent.com/110291925/182148041-ca17d786-3558-4efe-b1ce-c7fa87a1e65b.gif" width="800" height="600"/>
+
+
   - **구현 기능 설명**
     - 마이페이지-주문내역에서 주문취소 버튼 클릭 시 i’mport 결제 api를 호출하여 환불 진행
     - 환불이 완료되면 주문 취소 및 환불 완료 안내 alert창이 출력되며 확인 버튼 클릭 시 주문취소 버튼이 환불 완료로 변경됨-환불 완료 클릭 시 환불 영수증 확인 가능
