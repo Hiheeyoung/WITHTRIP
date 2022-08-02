@@ -6,11 +6,11 @@
 + 개발 목적 : 리뷰를 통한 동행의 신뢰도 확인, 여행 취향이 같은 동행 찾기 및 여행 용품 판매 사이트 제작
 + 개발 환경
   + O/S : Windows 10
-  + Server : Apache-tomcat-9.0
+  + Server : Apache-tomcat-9.0.62
   + IDE : Spring Tool Suite3
   + Database : Oracle SQL Developer 11g
-  + Language : Java, HTML5, CSS3, JavaScript, JSP, SQL
-  + Framework/flatform : Spring, mybatis, jQuery 3.6.0, Bootstrap
+  + Language : Java1.8, HTML5, CSS3, JavaScript, JSP, SQL
+  + Framework/flatform : Spring, mybatis-3.5.10, jQuery 3.6.0, Bootstrap, maven-3.8.5
   + API : WebSocket, Kakao 우편번호 서비스, Kakao 소셜 로그인, tawk.to, i’mport
 ---------------------
 ## ✏구현 기능
