@@ -10,7 +10,7 @@
   + IDE : Spring Tool Suite3
   + Database : Oracle SQL Developer 11g
   + Language : Java 1.8, HTML5, CSS3, JavaScript, JSP, SQL
-  + Framework/flatform : Spring 5.3.20, mybatis 3.5.6, jQuery 3.6.0, Bootstrap, maven 3.8.5
+  + Framework/flatform : Spring 5.3.20, myBatis 3.5.6, jQuery 3.6.0, Bootstrap, maven 3.8.5
   + API : WebSocket, Kakao 우편번호 서비스, Kakao 소셜 로그인, tawk.to, i’mport
 ---------------------
 ## ✏구현 기능
