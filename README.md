@@ -9,7 +9,7 @@
   + Server : Apache-tomcat 9.0.62
   + IDE : Spring Tool Suite3
   + Database : Oracle SQL Developer 11g
-  + Language : Java 1.8, HTML5, CSS3, JavaScript, JSP, SQL
+  + Language : Java 1.8, HTML, CSS, JavaScript, JSP, SQL
   + Framework/flatform : Spring 5.3.20, myBatis 3.5.6, jQuery 3.6.0, Bootstrap, maven 3.8.5
   + API : WebSocket, Kakao 우편번호 서비스, Kakao 소셜 로그인, tawk.to, i’mport
 ---------------------
@@ -32,7 +32,7 @@
     - 찾고싶은 상품을 상품 명으로 검색(엔터키로 검색)
     - 오른쪽 상단의 품절 상품 제외 버튼 클릭 시 품절된 상품을 제외한 상품 목록 확인 가능
         
-        → url에 따라 보여지는 버튼을 다르게 구현
+        → 현재 url을 비교하여 보여지는 버튼을 다르게 구현
         
     - 상품 목록 바로 위의 탭에서 총 상품 개수 확인 및 상품을 신상품, 판매량, 낮은가격, 높은가격 순으로 조회 가능
         
